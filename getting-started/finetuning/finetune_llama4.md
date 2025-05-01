@@ -12,7 +12,8 @@ pip install --pre torchtune --extra-index-url https://download.pytorch.org/whl/n
 2. We also need Hugging Face access token (HF_TOKEN) for model download, please follow the instructions [here](https://huggingface.co/docs/hub/security-tokens) to get your own token. You will also need to gain model access to Llama4 models from [here](https://huggingface.co/collections/meta-llama/llama-4-67f0c30d9fe03840bc9d0164)
 
 ### Steps
-1. Download Llama4 Weights
+1. **Download Llama4 Weights**
+
 We will use `meta-llama/Llama-4-Scout-17B-16E-Instruct` as an example here. Replace <HF_TOKEN> with your Hugging Face token:
 
 ```bash
@@ -20,18 +21,22 @@ tune download meta-llama/Llama-4-Scout-17B-16E-Instruct --output-dir /tmp/Llama-
 ```
 
 Alternatively, you can use `huggingface-cli` to login then download the model weights.
+
 ```bash
 huggingface-cli login --token $HF_TOKEN
 tune download meta-llama/Llama-4-Scout-17B-16E-Instruct --output-dir /tmp/Llama-4-Scout-17B-16E-Instruct
 ```
+
 This retrieves the model weights, tokenizer from Hugging Face.
 
-2. Run LoRA Fine-Tuning for Llama4
+2. **Run LoRA Fine-Tuning for Llama4**
 
 To run LoRA fine-tuning, use the following command:
+
 ```bash
 tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora
 ```
+
 This will run LoRA fine-tuning on Llama4 model with 8 GPUs. It will requires around 400GB gpu memory to do Llama4 Scout LoRA fine-tuning.
 
 You can add specific overrides through the command line. For example, to use a larger batch_size:
@@ -44,7 +49,7 @@ The config llama4/scout_17B_16E_lora is a config file that specifies the model, 
 
 With this setup, you can efficiently train LoRA adapters on Llama4 models using torchtune’s native recipes.
 
-3. Full Parameter Fine-Tuning for Llama4
+3. **Full Parameter Fine-Tuning for Llama4**
 
 To run full parameter fine-tuning, use the following command:
 
