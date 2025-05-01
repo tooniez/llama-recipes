@@ -7,6 +7,7 @@ This tutorial shows how to perform fine-tuning on Llama4 models using [torchtune
 1. We need to use torchtune to perform LoRA fine-tuning. Now llama4 LORA fine-tune requires nightly build:
 ```bash
 pip install --pre torchtune --extra-index-url https://download.pytorch.org/whl/nightly/cpu --no-cache-dir
+pip install --pre torch torchvision torchao --index-url https://download.pytorch.org/whl/nightly/cu126
 ```
 
 2. We also need Hugging Face access token (HF_TOKEN) for model download, please follow the instructions [here](https://huggingface.co/docs/hub/security-tokens) to get your own token. You will also need to gain model access to Llama4 models from [here](https://huggingface.co/collections/meta-llama/llama-4-67f0c30d9fe03840bc9d0164)
@@ -37,7 +38,7 @@ To run LoRA fine-tuning, use the following command:
 tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora
 ```
 
-This will run LoRA fine-tuning on Llama4 model with 8 GPUs. It will requires around 400GB gpu memory to do Llama4 Scout LoRA fine-tuning.
+This will run LoRA fine-tuning on Llama4 model with 8 GPUs.
 
 You can add specific overrides through the command line. For example, to use a larger batch_size:
 
@@ -54,7 +55,9 @@ With this setup, you can efficiently train LoRA adapters on Llama4 models using 
 To run full parameter fine-tuning, use the following command:
 
 ```bash
-  tune run --nproc_per_node 4  --nproc_per_node 8 full_finetune_distributed --config llama4/scout_17B_16E_full batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048
+  tune run  --nproc_per_node 8 full_finetune_distributed --config llama4/scout_17B_16E_full batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048
   ```
 
-This will run full parameter fine-tuning on Llama4 model with 4 nodes. It will requires around 2200GB gpu memory to do Scout full parameter fine-tuning, which is about 4 8xH100 nodes.
+This command will run a full fine-tuning on a single node as Torchtune by default use CPU offload to avoid Out-of-Memory (OOM) error.
+
+Alternatively, if you want to run with multi-node to avoid possible slowness from CPU offloading, please modify this [slurm script](https://github.com/pytorch/torchtune/blob/0ddd4b93c83de60656fb3db738228b06531f7c1e/recipes/full_finetune_multinode.slurm#L39).
