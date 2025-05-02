@@ -4,10 +4,13 @@ This tutorial shows how to perform fine-tuning on Llama4 models using [torchtune
 
 ### Prerequisites
 
-1. We need to use torchtune to perform LoRA fine-tuning. Now llama4 LORA fine-tune requires nightly build:
+1. We need to use torchtune to perform LoRA fine-tuning. Now llama4 LORA fine-tune requires build from source and install pytorch nightly build.
 ```bash
-pip install --pre torchtune --extra-index-url https://download.pytorch.org/whl/nightly/cpu --no-cache-dir
-pip install --pre torch torchvision torchao --index-url https://download.pytorch.org/whl/nightly/cu126
+pip install --force-reinstall --pre torch torchvision torchao --index-url https://download.pytorch.org/whl/nightly/cu126
+git clone https://github.com/pytorch/torchtune.git
+cd torchtune
+git checkout 1be43b6c3fc73e9bc5102bc53c4e70f849093bf6
+pip install -e .
 ```
 
 2. We also need Hugging Face access token (HF_TOKEN) for model download, please follow the instructions [here](https://huggingface.co/docs/hub/security-tokens) to get your own token. You will also need to gain model access to Llama4 models from [here](https://huggingface.co/collections/meta-llama/llama-4-67f0c30d9fe03840bc9d0164)
@@ -38,19 +41,16 @@ To run LoRA fine-tuning, use the following command:
 tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora
 ```
 
-This will run LoRA fine-tuning on Llama4 model with 8 GPUs.
+This will run LoRA fine-tuning on Llama4 model with 8 GPUs. The config llama4/scout_17B_16E_lora is a config file that specifies the model, tokenizer, and training parameters.
 
 You can add specific overrides through the command line. For example, to use a larger batch_size:
 
 ```bash
-  tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048
+  tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048 fsdp_cpu_offload=True
 ```
+The dataset.packed=True and tokenizer.max_seq_len=2048 are additional arguments that specify the dataset and tokenizer settings. By default, lora_finetune_distributed will not use CPU offloading, so set `fsdp_cpu_offload=True` will enable that to avoid OOM.  To learn more about the available options, please refer to the [YAML config documentation](https://pytorch.org/torchtune/stable/deep_dives/configs.html#config-tutorial-label)
 
-The config llama4/scout_17B_16E_lora is a config file that specifies the model, tokenizer, and training parameters. The dataset.packed=True and tokenizer.max_seq_len=2048 are additional arguments that specify the dataset and tokenizer settings. To learn more about the available options, please refer to the [YAML config documentation](https://pytorch.org/torchtune/stable/deep_dives/configs.html#config-tutorial-label)
-
-With this setup, you can efficiently train LoRA adapters on Llama4 models using torchtune’s native recipes.
-
-3. **Full Parameter Fine-Tuning for Llama4**
+3. **Run Full Parameter Fine-Tuning for Llama4**
 
 To run full parameter fine-tuning, use the following command:
 
