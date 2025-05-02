@@ -9,7 +9,7 @@ This tutorial shows how to perform fine-tuning on Llama4 models using [torchtune
 pip install --force-reinstall --pre torch torchvision torchao --index-url https://download.pytorch.org/whl/nightly/cu126
 git clone https://github.com/pytorch/torchtune.git
 cd torchtune
-git checkout 1be43b6c3fc73e9bc5102bc53c4e70f849093bf6
+git checkout 5d51c25cedfb6ba7b00e03cb2fef4f9cdb7baebd
 pip install -e .
 ```
 
