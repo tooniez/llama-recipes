@@ -48,7 +48,7 @@ You can add specific overrides through the command line. For example, to use a l
 ```bash
   tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048 fsdp_cpu_offload=True
 ```
-The dataset.packed=True and tokenizer.max_seq_len=2048 are additional arguments that specify the dataset and tokenizer settings. By default, lora_finetune_distributed will not use CPU offloading, so set `fsdp_cpu_offload=True` will enable that to avoid OOM.  To learn more about the available options, please refer to the [YAML config documentation](https://pytorch.org/torchtune/stable/deep_dives/configs.html#config-tutorial-label)
+The dataset.packed=True and tokenizer.max_seq_len=2048 are additional arguments that specify the dataset and tokenizer settings. By default, lora_finetune_distributed will not use CPU offloading, so set `fsdp_cpu_offload=True` will enable that to avoid OOM. Please check the [this yaml](https://github.com/pytorch/torchtune/blob/main/recipes/configs/llama4/scout_17B_16E_lora.yaml) for all the possible configs to override. To learn more about the YAML config, please refer to the [YAML config documentation](https://pytorch.org/torchtune/stable/deep_dives/configs.html#config-tutorial-label)
 
 3. **Run Full Parameter Fine-Tuning for Llama4**
 
@@ -58,6 +58,6 @@ To run full parameter fine-tuning, use the following command:
   tune run  --nproc_per_node 8 full_finetune_distributed --config llama4/scout_17B_16E_full batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048
   ```
 
-This command will run a full fine-tuning on a single node as Torchtune by default use CPU offload to avoid Out-of-Memory (OOM) error.
+This command will run a full fine-tuning on a single node as Torchtune by default use CPU offload to avoid Out-of-Memory (OOM) error. Please check the [this yaml](https://github.com/pytorch/torchtune/blob/main/recipes/configs/llama4/scout_17B_16E_full.yaml) for all the possible configs to override.
 
 Alternatively, if you want to run with multi-node to avoid possible slowness from CPU offloading, please modify this [slurm script](https://github.com/pytorch/torchtune/blob/0ddd4b93c83de60656fb3db738228b06531f7c1e/recipes/full_finetune_multinode.slurm#L39).
