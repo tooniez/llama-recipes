@@ -41,16 +41,17 @@ To run LoRA fine-tuning, use the following command:
 tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora
 ```
 
-This will run LoRA fine-tuning on Llama4 model with 8 GPUs. The config llama4/scout_17B_16E_lora is a config file that specifies the model, tokenizer, and training parameters.
+This will run LoRA fine-tuning on Llama4 model with 8 GPUs. The config llama4/scout_17B_16E_lora is a config file that specifies the model, tokenizer, and training parameters. This command will also download the `alpaca_dataset` as selected in the [config file](https://github.com/pytorch/torchtune/blob/main/recipes/configs/llama4/scout_17B_16E_full.yaml#L46). Please refer to the [Datasets section](https://pytorch.org/torchtune/main/basics/datasets_overview.html#datasets-overview) for more details.
 
 You can add specific overrides through the command line. For example, to use a larger batch_size:
 
 ```bash
   tune run --nproc_per_node 8 lora_finetune_distributed --config llama4/scout_17B_16E_lora batch_size=4 dataset.packed=True tokenizer.max_seq_len=2048 fsdp_cpu_offload=True
 ```
-The dataset.packed=True and tokenizer.max_seq_len=2048 are additional arguments that specify the dataset and tokenizer settings. By default, lora_finetune_distributed will not use CPU offloading, so set `fsdp_cpu_offload=True` will enable that to avoid OOM. Please check the [this yaml](https://github.com/pytorch/torchtune/blob/main/recipes/configs/llama4/scout_17B_16E_lora.yaml) for all the possible configs to override. To learn more about the YAML config, please refer to the [YAML config documentation](https://pytorch.org/torchtune/stable/deep_dives/configs.html#config-tutorial-label)
+The `dataset.packed=True` and `tokenizer.max_seq_len=2048` are additional arguments that specify the dataset and tokenizer settings. By default, `lora_finetune_distributed` will not use CPU offloading, so set `fsdp_cpu_offload=True` will enable that to avoid OOM. Please check the [this yaml](https://github.com/pytorch/torchtune/blob/main/recipes/configs/llama4/scout_17B_16E_lora.yaml) for all the possible configs to override. To learn more about the YAML config, please refer to the [YAML config documentation](https://pytorch.org/torchtune/stable/deep_dives/configs.html#config-tutorial-label)
 
 3. **Run Full Parameter Fine-Tuning for Llama4**
+
 
 To run full parameter fine-tuning, use the following command:
 
