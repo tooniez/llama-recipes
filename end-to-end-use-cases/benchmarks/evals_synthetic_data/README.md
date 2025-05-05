@@ -83,7 +83,7 @@ We create an Eval Data set using Llama with the `Context` and its correponsing `
 The usual method to measure hallucinations uses LLM-As-Judge methodology. An example hallucination metric is using [DeepEval](https://www.deepeval.com/docs/metrics-hallucination).
 This would use a powerful LLM as the ground truth to measure hallucinations.
 
-The below section shows a way to measure hallucinations using the ground truth data that we have (tabular data). The methodology is to make use of the tags that we have added in the report and use Llama to answer simple questions looking at the corresponding sections. Llama compares the answers with the ground truth and generates a list of boolean values. This is then used to measure accuracy of the factual information in the report. If your report has a well defined structure, using QA to measure hallucinations can be highly effective and cost efficient
+This notebook shows a  simple way to measure hallucinations using the ground truth data that we have (tabular data). The methodology is to make use of the tags that we have added in the report and use Llama to answer simple questions looking at the corresponding sections. Llama compares the answers with the ground truth and generates a list of boolean values. This is then used to measure accuracy of the factual information in the report. If your report has a well defined structure, using QA to measure hallucinations can be highly effective and cost efficient
 
 ### Example 
 
@@ -104,6 +104,6 @@ employability_perc: [True, None]
 
 ## Conclusion & Next Steps
 
-- Creating Evals for summarization is important
+- Creating good quality Evals for extractive summarization is challenging but important
 - Llama can be used to create evals given few samples of ground truth
 - Using simple QA to measure hallucinations can be an effective strategy to be be confident that important factual information is being verified 
