@@ -8,7 +8,7 @@ The notebook also shows how one could accurately measure hallucinations without 
 
 Let's assume we have a use case for generating a summarization report based on a given context, which is a pretty common use case with LLM. Both the context and the report have a lot of factual information and we want to make sure the generated report is not hallucinating.
 
-Since its not trivial to find an open source dataset for this, the idea is to take synthetic tabular data and then use Llama to generate a story(context) for every row of the tabular data using Prompt Engineering. Then we ask Llama to summarize the generated context as a report in a specfic format using Prompt Engineering. Finally we check the factual accuracy of the generated report using Llama by converting this into a QA task using the tabular data as the groud truth.
+Since its not trivial to find an open source dataset for this, the idea is to take synthetic tabular data and then use Llama to generate a story(context) for every row of the tabular data using Prompt Engineering. Then we ask Llama to summarize the generated context as a report in a specific format using Prompt Engineering. Finally we check the factual accuracy of the generated report using Llama by converting this into a QA task using the tabular data as the ground truth.
 
 To generate synthetic data for this approach, we use an open source tool like [Synthetic Data Vault(SDV)](https://github.com/sdv-dev/SDV)
 
@@ -82,7 +82,7 @@ Student has a 85.98% employability percentage
 
 ## Manual validation of Eval Dataset
 
-We create an Eval Data set using Llama with the `Context` and its correponsing `Report` as shown above. Once we have sufficient samples, it is important to validate that the data generated is in the expected format and has no factual errors. It is recommended that this step be done by a human till AGI becomes a reality.
+We create an Eval Data set using Llama with the `Context` and its corresponding `Report` as shown above. Once we have sufficient samples, it is important to validate that the data generated is in the expected format and has no factual errors. It is recommended that this step be done by a human till AGI becomes a reality.
 
 ## Measuring Hallucinations
 
