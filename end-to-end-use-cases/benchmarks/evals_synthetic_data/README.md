@@ -6,11 +6,17 @@ The notebook also shows how one could accurately measure hallucinations without 
 
 ## Overall idea
 
-Let's assume we have a use case for generating a report based on a given context, which is a pretty common use case with LLM. Both the context and the report have a lot of factual information and we want to make sure the generated report is not hallucinating.
+Let's assume we have a use case for generating a summarization report based on a given context, which is a pretty common use case with LLM. Both the context and the report have a lot of factual information and we want to make sure the generated report is not hallucinating.
 
-Since its not trivial to find an open source dataset for this, the idea is to take synthetic tabular data and then use Llama to generate a story(context) for every row of the tabular data. Finally we ask Llama to summarize the generated context as a report in a specfic format.
+Since its not trivial to find an open source dataset for this, the idea is to take synthetic tabular data and then use Llama to generate a story(context) for every row of the tabular data using Prompt Engineering. Then we ask Llama to summarize the generated context as a report in a specfic format using Prompt Engineering. Finally we check the factual accuracy of the generated report using Llama by converting this into a QA task using the tabular data as the groud truth.
 
-To generate synthetic data for this approach, we use an open source tool like [Synthetic Data Vault](https://github.com/sdv-dev/SDV)
+To generate synthetic data for this approach, we use an open source tool like [Synthetic Data Vault(SDV)](https://github.com/sdv-dev/SDV)
+
+The overall workflow is shown in the below diagram
+
+![Workflow](./Workflow_Diagram.png)
+
+- 
 
 ## Example Context & Report
 
