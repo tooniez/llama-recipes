@@ -49,7 +49,7 @@ For the last step, you need to further follow the [Sample Callback URL for Webho
 
 Now open the [Meta for Develops Apps](https://developers.facebook.com/apps/) page and select the WhatsApp business app and you should be able to copy the curl command (as shown in the App Dashboard - WhatsApp - API Setup - Step 2 below) and run the command on a Terminal to send a test message to your WhatsApp.
 
-![](../../../src/docs/img/whatsapp_dashboard.jpg)
+![](../../src/docs/img/whatsapp_dashboard.jpg)
 
 Note down the "Temporary access token", "Phone number ID", and "a recipient phone number" in the API Setup page above, which will be used later.
 
@@ -64,8 +64,8 @@ Note down the "Temporary access token", "Phone number ID", and "a recipient phon
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/meta-llama/internal-llama-cookbook.git
-cd internal-llama-cookbook/end-to-end-use-cases/whatsapp-llama4-bot
+git clone https://github.com/meta-llama/llama-cookbook.git
+cd llama-cookbook/end-to-end-use-cases/whatsapp-llama4-bot
 ```
 
 ### Step 2: Install Dependencies
@@ -87,7 +87,7 @@ ACCESS_TOKEN=your_whatsapp_access_token
 WHATSAPP_API_URL=your_whatsapp_api_url
 TOGETHER_API_KEY=your_llama4_api_key
 GROQ_API_KEY=your_groq_api_key
-PHONE_NUMBER_ID=your_phone_number_id'
+PHONE_NUMBER_ID=your_phone_number_id
 ```
 
 
