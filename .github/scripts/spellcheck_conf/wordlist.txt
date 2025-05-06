@@ -1545,3 +1545,4 @@ Summarizer
 AGI
 DeepEval
 SDV
+sklearn
