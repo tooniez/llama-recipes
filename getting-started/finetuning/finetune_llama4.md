@@ -11,18 +11,12 @@ Verify GPUs with nvidia-smi command.
 
 1. We need to use torchtune to perform LoRA fine-tuning. Now let's set up the environment and install pytorch nightly build. Llama4 LORA fine-tuning also requires build from source.
 
-a. Install Rust (required for safetensors package):
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source "$HOME/.cargo/env"
-```
-
-b. Create a Python 3.10 environment (recommended):
+a. Create a Python 3.10 environment (recommended):
 ```bash
 conda create -n py310 python=3.10 -y
 conda activate py310
 ```
-c.  Install PyTorch nightly and TorchTune:
+b.  Install PyTorch nightly and TorchTune:
 ```bash
 pip install --force-reinstall --pre torch torchvision torchao --index-url https://download.pytorch.org/whl/nightly/cu126
 git clone https://github.com/pytorch/torchtune.git
@@ -30,7 +24,7 @@ cd torchtune
 git checkout 5d51c25cedfb6ba7b00e03cb2fef4f9cdb7baebd
 pip install -e .
 ```
-d. Depending on your setup enviornment, you may also need to install these packages as well:
+c. Depending on your setup enviornment, you may also need to install these packages as well:
 ```bash
 pip install importlib_metadata
 pip install torchvision
