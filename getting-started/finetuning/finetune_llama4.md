@@ -24,7 +24,7 @@ cd torchtune
 git checkout 5d51c25cedfb6ba7b00e03cb2fef4f9cdb7baebd
 pip install -e .
 ```
-c. Depending on your setup enviornment, you may also need to install these packages as well:
+c. Depending on your setup environment, you may also need to install these packages as well:
 ```bash
 pip install importlib_metadata
 pip install torchvision
