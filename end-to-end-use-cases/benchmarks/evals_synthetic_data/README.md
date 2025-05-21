@@ -1,6 +1,6 @@
 # Creating Evals with synthetic data and measuring hallucinations
 
-When you deploy Llama for your use case, it is a good practice to have Evals for your usecase. In an ideal world, you want to have human annotated Evals. If for some reason, this is not possible, this notebook shows a strategy for how one might go about addressing Evals using synthetic data. However, the Evals generated still require validation by a human to make sure that your revenue generating production use case can rely on this. 
+When you deploy Llama for your use case, it is a good practice to have Evals for your use case. In an ideal world, you want to have human annotated Evals. If for some reason, this is not possible, this notebook shows a strategy for how one might go about addressing Evals using synthetic data. However, the Evals generated still require validation by a human to make sure that your revenue generating production use case can rely on this. 
 The notebook also shows how one could accurately measure hallucinations without using LLM-As-A-Judge methodology using Llama
 
 
