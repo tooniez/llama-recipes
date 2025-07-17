@@ -275,7 +275,7 @@ def main(**kwargs):
         elif torch.cuda.is_available():
             device_id = torch.cuda.current_device()
 
-        # This single line robustly sets use_orig_params for both freeze_LLM_only and PEFT (LoRA/QLoRA)
+       
         use_orig_params = train_config.freeze_LLM_only or train_config.use_peft
         
         model = FSDP(
