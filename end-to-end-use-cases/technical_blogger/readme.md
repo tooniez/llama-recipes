@@ -1,8 +1,8 @@
 # Technical Blog Generator with RAG and Llama
 
-This project provides a practical recipe for building an AI-powered technical blog generator leveraging **Retrieval-Augmented Generation (RAG)**. It demonstrates how to combine the power of a Llama large language model (LLM) with a local, in-memory vector database (Qdrant) to synthesize accurate, relevant, and well-structured technical blog posts from your existing documentation.
+This project provides a practical recipe for building an AI-powered technical blog generator leveraging LLama 4. It demonstrates how to combine the power of a Llama4 with a local, in-memory vector database (Qdrant) to synthesize accurate, relevant, and well-structured technical blog posts from your existing documentation.
 
-## Why RAG for Blog Generation?
+##  Features :
 
 Integrating a Llama LLM with a vector database via a RAG approach offers significant advantages over using an LLM alone:
 
@@ -19,38 +19,6 @@ The system follows a standard RAG pipeline, adapted for local development:
 2.  **Indexing**: An embedding model (e.g., `all-MiniLM-L6-v2`) converts these text chunks into numerical vector embeddings. These vectors are then stored in an **in-memory Qdrant vector database**.
 3.  **Retrieval**: When a user specifies a blog topic, a query embedding is generated. This embedding is used to search the Qdrant database for the most relevant document chunks from your ingested knowledge base.
 4.  **Generation**: The retrieved relevant chunks, combined with the user's desired topic and a carefully crafted system prompt, are fed into the Llama model via its API. The Llama model then generates a comprehensive and detailed technical blog post based on this provided context.
-
-
-
-
-+------------------+     +--------------------+     +-------------------+
-| Technical Docs   | --> | Data Chunking &    | --> | Embedding Model   |
-| (Raw Text Files) |     | Preprocessing      |     | (SentenceTrans.)  |
-+------------------+     +--------------------+     +-------------------+
-|                                                    |
-v                                                    v
-+-----------------------+                            +-----------------------+
-| In-Memory Qdrant DB   | <--------------------------| Vector Embeddings     |
-| (Knowledge Base)      | (Store Chunks & Embeddings)|                       |
-+-----------------------+                            +-----------------------+
-^
-| (Query for relevant chunks)
-+-----------------------+
-| User Input (Topic)    |
-+-----------------------+
-|
-v
-+-----------------------+     +-------------------+
-| Llama API             | <---| System Prompt     |
-| (Blog Generation)     |     | + Retrieved Chunks |
-+-----------------------+     +-------------------+
-|
-v
-+-----------------------+
-| Generated Technical   |
-| Blog Post (Markdown)  |
-+-----------------------+
-
 
 
 
