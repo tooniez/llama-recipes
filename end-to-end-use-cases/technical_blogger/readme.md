@@ -40,8 +40,7 @@ Follow these steps to set up and run the technical blog generator.
 
 First, clone the `llama-cookbook` repository and navigate to the specific recipe directory:
 
-```bash
-git clone [https://github.com/your-github-username/llama-cookbook.git](https://github.com/your-github-username/llama-cookbook.git) # Replace with actual repo URL if different
+git clone [https://github.com/your-github-username/llama-cookbook.git](https://github.com/your-github-username/llama-cookbook.git) 
 cd llama-cookbook/end-to-end-use-cases/technical_blogger
 
 ### Step 2: Set Up Your Python Environment 🧑‍💻
