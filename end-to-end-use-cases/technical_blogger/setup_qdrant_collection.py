@@ -6,9 +6,9 @@ from sentence_transformers import SentenceTransformer
 import uuid
 import re
 
-# Configuration
-QDRANT_URL = "https://754e68dd-c297-4ab2-9833-c81cbfbfb75c.eu-west-2-0.aws.cloud.qdrant.io:6333"
-QDRANT_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.kRiEKHQ5s4KUWoYJqhQ29tbmbgfqFT2jAAfgrPTshSM"
+# Configuration - in case you want to create an online collection
+QDRANT_URL = "replace with your Qdrant URL"
+QDRANT_API_KEY = "replace with your qdrant API key"
 EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
 
 # New files to process
