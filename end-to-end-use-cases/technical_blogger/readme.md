@@ -36,14 +36,24 @@ The system follows a standard RAG pipeline, adapted for local development:
 
 Follow these steps to set up and run the technical blog generator.
 
-### Step 1: Clone the Repository 
+### Step 1: Clone the Repository and setup your Python Environment
 
-First, clone the `llama-cookbook` repository and navigate to the specific recipe directory:
+First, clone the `llama-cookbook` repository and navigate to the specific recipe directory as per the below:
 
-git clone [https://github.com/your-github-username/llama-cookbook.git](https://github.com/your-github-username/llama-cookbook.git) 
+git clone https://github.com/meta-llama/llama-cookbook
 cd llama-cookbook/end-to-end-use-cases/technical_blogger
+pip install -r requirements.txt
 
-### Step 2: Set Up Your Python Environment 
-### Step 3: Configure Your API Key 
-### Step 4: Prepare Your Knowledge Base (Data Ingestion) 
-### Step 5: Run the Notebook 
+
+### Step 2: Configure Your API Key 
+You'll need to configure your Llama API key. You can do this by setting an environment variable named LLAMA_API_KEY. For more information on obtaining a Llama API key, refer to the [Llama Developer Documentation](https://llama.developer.meta.com/docs/overview/).
+
+Similarly, you'll need to set up a Qdrant account and generate an access token. You can follow the instructions in the [Qdrant Cloud Account Setup documentation](https://qdrant.tech/documentation/cloud-account-setup/) to create an account and obtain an API key.
+
+
+### Step 3: Prepare Your Knowledge Base (Data Ingestion) 
+Before generating a blog post, you'll need to prepare your knowledge base by populating a Qdrant collection with relevant data. You can use the provided qdrant_setup_partial.py script to create and populate a Qdrant collection.
+For more information on setting up a Qdrant collection, refer to the qdrant_setup_partial.py script.
+
+### Step 4: Run the Notebook 
+Once you've completed the previous steps, you can run the notebook to generate a technical blog post. Simply execute the cells in the notebook, and it will guide you through the process of generating a high-quality blog post based on your technical documentation.
