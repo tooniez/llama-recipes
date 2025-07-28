@@ -1,5 +1,14 @@
 
-# qdrant_setup_partial.py
+
+
+"""
+Script to set up a Qdrant collection with provided markdown files.
+To use this script, replace the file paths in the NEW_COLLECTIONS list with your own markdown files.
+Then, run the script using Python: `python setup_qdrant_collection.py`
+"""
+
+
+
 from pathlib import Path
 from qdrant_client import QdrantClient, models
 from sentence_transformers import SentenceTransformer
@@ -15,17 +24,14 @@ EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
 # IMPORTANT: Added the configuration for readme_blogs_latest here
 NEW_COLLECTIONS = [
     {
-        "file_path": "/home/ubuntu/nilesh-workspace-backup-20250707/Blog_generation/internal-llama-cookbook/end-to-end-use-cases/technical_blogger/Blog_generation/cookbook_metadata/mdfiles_latest.txt",
-        "collection_name": "readme_blogs_latest"
+        "file_path": "path/to/your/markdown/file1.txt",
+        "collection_name": "example_collection_1"
     },
     {
-        "file_path": "/home/ubuntu/nilesh-workspace-backup-20250707/Blog_generation/internal-llama-cookbook/end-to-end-use-cases/technical_blogger/Blog_generation/cookbook_metadata/3rd_party_integrations.txt",
-        "collection_name": "3rd_party_integrations"
-    },
-    {
-        "file_path": "/home/ubuntu/nilesh-workspace-backup-20250707/Blog_generation/internal-llama-cookbook/end-to-end-use-cases/technical_blogger/Blog_generation/cookbook_metadata/Getting_started_files.txt",
-        "collection_name": "getting_started_files"
+        "file_path": "path/to/your/markdown/file2.txt",
+        "collection_name": "example_collection_2"
     }
+
 ]
 
 def markdown_splitter(text, max_chunk=800):
