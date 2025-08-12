@@ -1,4 +1,4 @@
-# LlamaLens: Rich Document Parsing with LLMs
+# DocumentLens: Rich Document Parsing with LLMs
 
 A powerful, LLM-based tool for extracting structured data from rich documents (PDFs) with Llama models.
 
