@@ -1,0 +1,128 @@
+# Database Configuration
+database:
+  sql_db_path: "sqlite3.db"
+  vector_db_path: "chroma.db"
+
+# Model Configuration
+model:
+  backend: openai-compat  #  [offline-vllm, openai-compat]
+
+  # for offline-vllm, use the following
+  path: "/path/to/checkpoint"
+  tensor_parallel_size: 4
+  max_model_len: 32000
+  max_num_seqs: 32
+
+  # for openai-compat, use the following
+  base_url: "https://api.llama.com/compat/v1"
+  api_key: ""
+  model_id: "Llama-4-Maverick-17B-128E-Instruct-FP8"
+
+
+# Inference Parameters
+extraction_inference:
+  temperature: 0.2
+  top_p: 0.9
+  max_completion_tokens: 17000
+  seed: 42
+
+# Artifact configuration
+artifacts:
+  text:
+    prompts:
+      system: "You are an OCR expert. Your task is to extract all the various text sections (main text, body text, titles, captions etc.) from the following document into the provided TARGET SCHEMA. \n\nDo not extract any tables or any text inside pictures and graphs.\n\nEnsure your final answer is appropriately formatted as a JSON object and wrapped in a ```json\n\n``` block."
+      user: "TARGET SCHEMA:\n```json\n{schema}\n```"
+    output_schema: {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "The main text content extracted from the document"
+              },
+              "notes": {
+                "type": "string",
+                "description": "Any additional notes or observations about the text"
+              }
+            },
+            "required": [
+              "content",
+              "notes"
+            ]
+          }
+        }
+      },
+      "required": [
+        "text"
+      ]
+    }
+    use_json_decoding: true
+
+  images:
+    prompts:
+      system: "You are an OCR expert.\n\n1.Your task is to extract images, pictures and diagrams data from the following document. Do not extract tables or charts. \n2. For each extracted image, you must write\n a) a caption as given in the document,\n b) a detailed description of the image; utilize the surrounding text for this. Your descriptions should be very informative so that a human can understand what is in the image without ever seeing the document.Think step-by-step and write a JSON that corresponds to the schema and the information in the document\n\nIf there is nothing to extract, simply return an empty JSON {\"images\": []}. Ensure your final answer is appropriately formatted as a JSON object and wrapped in a ```json\n\n``` block."
+      user: "TARGET SCHEMA:\n```json\n{schema}\n```"
+    output_schema: {
+      "type": "object",
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position_top": {
+                "type": "string",
+                "description": "Approximate position from top (e.g., 'top', 'middle', 'bottom')"
+              },
+              "position_left": {
+                "type": "string",
+                "description": "Approximate position from left (e.g., 'left', 'center', 'right')"
+              },
+              "description": {
+                "type": "string",
+                "description": "Detailed description of what the image shows"
+              },
+              "caption": {
+                "type": "string",
+                "description": "Caption or label associated with the image, if any"
+              },
+              "image_type": {
+                "type": "string",
+                "description": "Type of image (e.g., 'photograph', 'chart', 'diagram', 'illustration')"
+              }
+            },
+            "required": [
+              "description",
+              "caption",
+              "image_type"
+            ]
+          }
+        }
+      },
+      "required": [
+        "images"
+      ]
+    }
+    use_json_decoding: false
+
+  tables:
+    prompts:
+      system: "Your task is to extract all tables in this document and prepare it in a structured format. If there are multiple tables in a document, extract each table separately. Your goal is to accurately extract the data so it can be loaded as a pandas dataframe. \n\n1. First you must ensure that there exists some tabular information in the document. If there isn't, simply return an empty JSON \n\n```json\n{\"tables\": []}\n```. 2. Next you must understand the table structure:\n\n  * how many columns are there?\n  * are any of the rows actually section headers that you should extract as a separate table?\n  * how should the numbers be interpreted? (e.g. are they percentages, currency, etc.)\n  * are there any special characters or formatting that needs to be preserved?\n\n3. After writing down your observations about the structure and nuances, you must extract the data from the table and format it as a JSON object. Each table or sub-table in the document should be a separate JSON object."
+      user: "Think step-by-step and write a JSON that corresponds to the schema and the information in the document. Use the following JSON structure for your output:\n\n```json\n{\"tables\": [{\"table_contents\": { < dict, valid json of extracted table> },    \"table_info\": <str, a detailed description of the table and the information it represents>}, {\"table_contents\": { < dict, valid json of extracted table> },    \"table_info\": <str, a detailed description of the table and the information it represents>} ...]\n}\n```\n\nIf there is nothing to extract, simply return an empty JSON \n\n```json\n{\"tables\": []}\n```"
+    use_json_decoding: false
+
+  tables_markdown:
+    prompts:
+      system: "Your task is to extract all tables in this document and prepare it in a structured format. If there are multiple tables in a document, extract each table separately. \n\n1. First you must understand the table structure:\n\n  * how many columns are there?\n  * are any of the rows actually section headers?\n  *  are there multiple sections in a single table?\n\n2. Then, you must rewrite each table in markdown. If there are multiple sections in a single table, treat each section as a separate table. \n\n3. Finally, write your response in valid JSON. Your JSON should align with the provided TARGET SCHEMA."
+      user:  "TARGET SCHEMA: \n\n```json\n{\"tables\": [{\"table_markdown\": { < str, markdown of table 1> },    \"table_info\": <str, a detailed description of the table and the information it represents>}, {\"table_contents\": { <str, markdown of table 2> },    \"table_info\": <str, a detailed description of the table and the information it represents>},  ... ]\n}\n```"
+    use_json_decoding: false
+
+  tables_fixed_schema:
+    prompts:
+      system: "Your task is to extract all tables in this document into the provided TARGET SCHEMA. If there are multiple tables in a document, extract each table separately. Think step-by-step before you start writing the JSON. \n\n1. First you must understand the table structure:\n\n  * how many columns are there?\n  * are any of the rows actually section headers that you should extract as a separate table?\n  * how should the numbers be interpreted? (e.g. are they percentages, currency, etc.)\n  * are there any special characters or formatting that needs to be preserved?\nWrite down your observations about the structure and nuances.\n\n2. Then, you must carefully extract the data from the table and format it as a JSON. The JSON should be aligned with the `TARGET SCHEMA."
+      user: "TARGET SCHEMA:\n```json\n{schema}\n```"
+    use_json_decoding: false
