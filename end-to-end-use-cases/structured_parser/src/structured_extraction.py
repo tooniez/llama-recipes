@@ -504,7 +504,7 @@ def save_results(
             logger.info(f"Extracted table written to {outfile}")
 
         if export_excel:
-            output_path = output_dir / f"tables_{timestamp}.json"
+            output_path = output_dir / f"tables_{timestamp}.xlsx"
             export_csvs_to_excel_tabs(output_dir / f"tables_{timestamp}", output_path)
 
     # Save to SQL and vector databases
