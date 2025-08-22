@@ -23,7 +23,7 @@ model:
 extraction_inference:
   temperature: 0.2
   top_p: 0.9
-  max_completion_tokens: 17000
+  max_completion_tokens: 32000
   seed: 42
 
 # Artifact configuration
@@ -64,7 +64,7 @@ artifacts:
 
   images:
     prompts:
-      system: "You are an OCR expert.\n\n1.Your task is to extract images, pictures and diagrams data from the following document. Do not extract tables or charts. \n2. For each extracted image, you must write\n a) a caption as given in the document,\n b) a detailed description of the image; utilize the surrounding text for this. Your descriptions should be very informative so that a human can understand what is in the image without ever seeing the document.Think step-by-step and write a JSON that corresponds to the schema and the information in the document\n\nIf there is nothing to extract, simply return an empty JSON {\"images\": []}. Ensure your final answer is appropriately formatted as a JSON object and wrapped in a ```json\n\n``` block."
+      system: "You are an OCR expert. (Note: Do not extract tables)\n\n1.Your task is to extract images, pictures, charts and diagrams only from the following document.\n 2. For each extracted image, you must write\n a) a caption as given in the document\n	b) a detailed description of the image; utilize the surrounding text for this. Your descriptions should be very informative so that a human can understand what is in the image without ever seeing the document. Think step-by-step and write a JSON that corresponds to the schema and the information in the document\n\nIf there is nothing to extract, simply return an empty JSON {\"images\": []}. \nIf the image is a table, simply return an empty JSON {\"images\": []}. \n\nIf the image is a chart or a graph then you must convert them to JSON outputs.\n\n# Instructions to convert charts & graphs to JSON\nYour task is to: Analyze and describe the chart or graph. Summarize the type of chart/graph (e.g., bar chart, line graph, pie chart). Identify the axes, labels, categories, and any notable trends or patterns. Provide a brief textual description of what the chart/graph represents. Extract and structure the data:\n1. Capture all relevant values and data points from the chart/graph.\n2. Organize the extracted data into a clear and logical JSON structure.\n\n# Output format:\n\nYour response should be captured in the chart_data attribute of the JSON schema. Ensure your final answer is appropriately formatted as a JSON object and wrapped in a ```json\n\n``` block."
       user: "TARGET SCHEMA:\n```json\n{schema}\n```"
     output_schema: {
       "type": "object",
@@ -93,6 +93,79 @@ artifacts:
               "image_type": {
                 "type": "string",
                 "description": "Type of image (e.g., 'photograph', 'chart', 'diagram', 'illustration')"
+              },
+              "chart_data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["bar", "line", "pie", "scatter", "area"]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "subtitle": {
+                      "type": "string"
+                    },
+                    "xAxis": {
+                      "type": "object",
+                      "properties": {
+                        "title": { "type": "string" },
+                        "labels": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        }
+                      },
+                      "required": ["title", "labels"]
+                    },
+                    "yAxis": {
+                      "type": "object",
+                      "properties": {
+                        "title": { "type": "string" },
+                        "labels": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        }
+                      },
+                      "required": ["title", "labels"]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "label": { "type": "string" },
+                              "values": {
+                                "type": "array",
+                                "items": { "type": "number" }
+                              }
+                            },
+                            "required": ["label", "values"]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "x": { "type": "number" },
+                              "y": { "type": "number" }
+                            },
+                            "required": ["x", "y"]
+                          }
+                        ]
+                      }
+                    },
+                    "options": {
+                      "type": "object",
+                      "properties": {
+                        "legend": { "type": "boolean" },
+                        "rtl": { "type": "boolean" },
+                        "responsive": { "type": "boolean" },
+                        "animation": { "type": "boolean" }
+                      }
+                    }
+                  },
+                  "required": ["type", "title", "xAxis", "yAxis", "data"]
               }
             },
             "required": [

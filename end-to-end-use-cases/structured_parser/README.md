@@ -27,26 +27,39 @@ The tool is designed to handle complex documents with high accuracy and provides
 2. Install dependencies:
 
 ```bash
+git clone https://github.com/meta-llama/llama-cookbook.git
+```
+```bash
+cd llama-cookbook
+```
+```bash
 pip install -r requirements.txt
 ```
-
-3. Configure the tool (see Configuration section)
-
+2. Install project specific dependencies:
+```bash
+cd end-to-end-use-cases/structured_parser
+```
+```bash
+pip install -r requirements.txt
+```
 ## Quick Start
 
-Extract text from a PDF:
+### Configure the tool (see [Configuration](#Configuration) section)
+(Note: Setup API Key, Model for inferencing, etc.)
+
+### Extract text from a PDF:
 
 ```bash
 python src/structured_extraction.py path/to/document.pdf --text
 ```
 
-Extract text and tables, and save tables as CSV files:
+### Extract text and tables, and save tables as CSV files:
 
 ```bash
 python src/structured_extraction.py path/to/document.pdf --text --tables --save_tables_as_csv
 ```
 
-Process a directory of PDFs and export tables to Excel:
+### Process a directory of PDFs and export tables to Excel:
 
 ```bash
 python src/structured_extraction.py path/to/pdf_directory --text --tables --export_excel
