@@ -100,7 +100,8 @@ class DatabaseManager:
                 cursor.execute("DROP TABLE IF EXISTS document_artifacts")
 
                 # Create table with schema
-                cursor.execute("""
+                cursor.execute(
+                    """
                 CREATE TABLE IF NOT EXISTS document_artifacts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     doc_path TEXT,
@@ -124,7 +125,8 @@ class DatabaseManager:
                     image_caption TEXT,
                     image_type TEXT
                 )
-                """)
+                """
+                )
 
                 # Create indexes for common queries
                 cursor.execute(

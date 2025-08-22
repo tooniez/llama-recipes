@@ -14,7 +14,6 @@ vllm>=0.2.0
 openai>=1.0.0
 
 # Database and vector search
-sqlite3>=3.35.0
 chromadb>=0.4.0
 sqlalchemy>=2.0.0
 

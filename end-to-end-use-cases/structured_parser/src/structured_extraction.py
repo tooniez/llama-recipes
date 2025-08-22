@@ -196,6 +196,7 @@ class ArtifactExtractor:
         artifact_types = [r[0] for r in requests]
         inference_requests = [r[1] for r in requests]
 
+        response_batch = []
         if backend == "offline-vllm":
             request_batch = InferenceUtils.make_vllm_batch(inference_requests)
             response_batch = InferenceUtils.run_vllm_inference(request_batch)
@@ -304,79 +305,6 @@ class ArtifactExtractor:
 
         return pdf_pages
 
-    # @staticmethod
-    # async def _run_inference_async(
-    #     requests: List[Tuple[str, InferenceRequest]],
-    # ) -> List[Tuple[str, str]]:
-    #     """
-    #     Run inference asynchronously for all requests.
-
-    #     Args:
-    #         requests: List of tuples containing (artifact_type, inference_request)
-
-    #     Returns:
-    #         List of tuples containing (artifact_type, response)
-
-    #     Raises:
-    #         ValueError: If the backend is not supported
-    #     """
-    #     backend = config["model"].get("backend")
-    #     if backend not in SUPPORTED_BACKENDS:
-    #         raise ValueError(
-    #             f"Allowed config.model.backend: {SUPPORTED_BACKENDS}, got unknown value: {backend}"
-    #         )
-
-    #     artifact_types = [r[0] for r in requests]
-    #     inference_requests = [r[1] for r in requests]
-
-    #     if backend == "offline-vllm":
-    #         request_batch = InferenceUtils.make_vllm_batch(inference_requests)
-    #         response_batch = InferenceUtils.run_vllm_inference(request_batch)
-    #     elif backend == "openai-compat":
-    #         tasks = [
-    #             InferenceUtils.async_run_openai_inference(request)
-    #             for request in inference_requests
-    #         ]
-    #         response_batch = await asyncio.gather(*tasks)
-
-    #     return list(zip(artifact_types, response_batch))
-
-    # @staticmethod
-    # async def from_image_async(
-    #     img_path: str,
-    #     artifact_types: Union[List[str], str],
-    # ) -> ArtifactCollection:
-    #     """
-    #     Extract artifacts from an image asynchronously.
-
-    #     Args:
-    #         img_path: Path to the image file
-    #         artifact_types: Type(s) of artifacts to extract
-
-    #     Returns:
-    #         ArtifactCollection: Extracted artifacts
-
-    #     Raises:
-    #         ValueError: If the backend is not supported
-    #         FileNotFoundError: If the image file doesn't exist
-    #     """
-    #     if not os.path.exists(img_path):
-    #         raise FileNotFoundError(f"Image file not found: {img_path}")
-
-    #     if isinstance(artifact_types, str):
-    #         artifact_types = [artifact_types]
-
-    #     # Prepare inference requests
-    #     requests = ArtifactExtractor._prepare_inference_requests(
-    #         img_path, artifact_types
-    #     )
-
-    #     # Run inference asynchronously
-    #     responses = await ArtifactExtractor._run_inference_async(requests)
-
-    #     # Process responses
-    #     return ArtifactExtractor._process_responses(responses)
-
 
 def get_artifact_types(text: bool, tables: bool, images: bool) -> List[str]:
     """
@@ -422,16 +350,16 @@ def get_target_files(target_path: str) -> List[Path]:
     if not os.path.exists(target_path):
         raise FileNotFoundError(f"Target path not found: {target_path}")
 
-    target_path = Path(target_path)
-    if target_path.is_file() and target_path.suffix not in SUPPORTED_FILE_TYPES:
+    target_path_obj = Path(target_path)
+    if target_path_obj.is_file() and target_path_obj.suffix not in SUPPORTED_FILE_TYPES:
         raise ValueError(
-            f"Unsupported file type: {target_path.suffix}. Supported types: {SUPPORTED_FILE_TYPES}"
+            f"Unsupported file type: {target_path_obj.suffix}. Supported types: {SUPPORTED_FILE_TYPES}"
         )
 
     targets = (
-        [target_path]
-        if target_path.is_file()
-        else [f for f in target_path.iterdir() if f.suffix in SUPPORTED_FILE_TYPES]
+        [target_path_obj]
+        if target_path_obj.is_file()
+        else [f for f in target_path_obj.iterdir() if f.suffix in SUPPORTED_FILE_TYPES]
     )
     logger.debug(f"Processing {len(targets)} files")
     if not targets:
@@ -456,7 +384,7 @@ def process_files(
     out_json = []
     for target in targets:
         try:
-            artifacts = ArtifactExtractor.from_pdf(target, artifact_types)
+            artifacts = ArtifactExtractor.from_pdf(str(target), artifact_types)
             out_json.extend(artifacts)
         except Exception as e:
             logger.error(f"Failed to process {target}: {e}")
@@ -485,6 +413,7 @@ def save_results(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Save to JSON file
+    output_path = None
     try:
         output_path = output_dir / f"artifacts_{timestamp}.json"
         json_content = json.dumps(data, indent=2)
@@ -562,8 +491,8 @@ def main(
     results = process_files(targets, artifact_types)
 
     # Save results
-    target_path = Path(target_path)
-    output_dir = target_path.parent / "extracted"
+    target_path_obj = Path(target_path)
+    output_dir = target_path_obj.parent / "extracted"
     save_results(
         output_dir,
         results,
