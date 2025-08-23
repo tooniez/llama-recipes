@@ -15,7 +15,7 @@ model:
 
   # for openai-compat, use the following
   base_url: "https://api.llama.com/compat/v1"
-  api_key: "LLM|1707070660158994|W1-9wq11_y75_5Ulsf5R1ccftto"
+  api_key: ""
   model_id: "Llama-4-Maverick-17B-128E-Instruct-FP8"
 
 
