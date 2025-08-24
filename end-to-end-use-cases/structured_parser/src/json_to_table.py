@@ -100,8 +100,7 @@ class DatabaseManager:
                 cursor.execute("DROP TABLE IF EXISTS document_artifacts")
 
                 # Create table with schema
-                cursor.execute(
-                    """
+                cursor.execute("""
                 CREATE TABLE IF NOT EXISTS document_artifacts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     doc_path TEXT,
@@ -125,8 +124,7 @@ class DatabaseManager:
                     image_caption TEXT,
                     image_type TEXT
                 )
-                """
-                )
+                """)
 
                 # Create indexes for common queries
                 cursor.execute(
@@ -520,7 +518,7 @@ I require 2 things from you:
 2. A succinct filename for this table based on the data contents.
 
 You should only respond with a JSON, no preamble required. Your JSON response should follow this format:
-{"csv_table": <str of table>, "filename": <filename to save table>}"""
+{"csv_table": <str of table>, "filename": <filename to save table>}. Your CSV string should be for a single table that can be loaded into Pandas."""
 
     user_prompt = f"data:\n{json.dumps(data)}"
     if info:

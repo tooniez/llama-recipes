@@ -188,14 +188,46 @@ artifacts:
       user: "Think step-by-step and write a JSON that corresponds to the schema and the information in the document. Use the following JSON structure for your output:\n\n```json\n{\"tables\": [{\"table_contents\": { < dict, valid json of extracted table> },    \"table_info\": <str, a detailed description of the table and the information it represents>}, {\"table_contents\": { < dict, valid json of extracted table> },    \"table_info\": <str, a detailed description of the table and the information it represents>} ...]\n}\n```\n\nIf there is nothing to extract, simply return an empty JSON \n\n```json\n{\"tables\": []}\n```"
     use_json_decoding: false
 
-  tables_markdown:
+  charts:
     prompts:
-      system: "Your task is to extract all tables in this document and prepare it in a structured format. If there are multiple tables in a document, extract each table separately. \n\n1. First you must understand the table structure:\n\n  * how many columns are there?\n  * are any of the rows actually section headers?\n  *  are there multiple sections in a single table?\n\n2. Then, you must rewrite each table in markdown. If there are multiple sections in a single table, treat each section as a separate table. \n\n3. Finally, write your response in valid JSON. Your JSON should align with the provided TARGET SCHEMA."
-      user:  "TARGET SCHEMA: \n\n```json\n{\"tables\": [{\"table_markdown\": { < str, markdown of table 1> },    \"table_info\": <str, a detailed description of the table and the information it represents>}, {\"table_contents\": { <str, markdown of table 2> },    \"table_info\": <str, a detailed description of the table and the information it represents>},  ... ]\n}\n```"
-    use_json_decoding: false
-
-  tables_fixed_schema:
-    prompts:
-      system: "Your task is to extract all tables in this document into the provided TARGET SCHEMA. If there are multiple tables in a document, extract each table separately. Think step-by-step before you start writing the JSON. \n\n1. First you must understand the table structure:\n\n  * how many columns are there?\n  * are any of the rows actually section headers that you should extract as a separate table?\n  * how should the numbers be interpreted? (e.g. are they percentages, currency, etc.)\n  * are there any special characters or formatting that needs to be preserved?\nWrite down your observations about the structure and nuances.\n\n2. Then, you must carefully extract the data from the table and format it as a JSON. The JSON should be aligned with the `TARGET SCHEMA."
+      system: "You are an OCR expert. Your task is to extract charts, graphs and other graphical visualizations of data from the following document into JSON. Do not extract tables, only analyze and extract the charts in this document.\n\n### Steps:\n\n1. Identify the type of chart/graph (e.g., bar chart, line graph, pie chart).\n2. Identify the axes, labels, categories, and any notable trends or patterns.\n3. Provide a brief textual description of what the chart/graph represents; use the caption and surrounding text in the document to write this.\n4. Extract and structure the data into a valid and logical JSON structure.\n5. If there are no charts or graphs to extract, simply return an empty JSON {\"charts\": []}. Ensure your final answer is appropriately formatted as a JSON object and wrapped in a ```json\n\n``` block."
       user: "TARGET SCHEMA:\n```json\n{schema}\n```"
+    output_schema: {
+      "type": "object",
+      "properties": {
+        "charts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chart_type": {
+                "type": "string",
+                "enum": ["bar", "line", "pie", "scatter", "area", "sankey", "heatmap"]
+              },
+              "description": {
+                "type": "string",
+                "description": "Detailed description of what the image shows"
+              },
+              "caption": {
+                "type": "string",
+                "description": "Caption or label associated with the image, if any"
+              },
+              "data": {
+                "type": "object",
+                "description": "Data in the chart; use appropriate keys and values to best represent the information in the chart",
+              }
+            },
+            "required": [
+              "chart_type",
+              "description",
+              "caption",
+              "data"
+            ]
+          }
+        }
+      },
+      "required": [
+        "charts"
+      ]
+    }
     use_json_decoding: false

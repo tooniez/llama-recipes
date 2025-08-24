@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import fire
 
-from json_to_sql import flatten_json_to_sql, json_to_csv
+from json_to_table import flatten_json_to_sql, json_to_csv
 from tqdm import tqdm
 from typedicts import ArtifactCollection, ExtractedPage, InferenceRequest
 
@@ -35,7 +35,17 @@ SUPPORTED_BACKENDS = ["offline-vllm", "openai-compat"]
 SUPPORTED_FILE_TYPES = [".pdf"]
 
 
-def setup_logger(logfile, verbose=False):
+def setup_logger(logfile: str, verbose: bool = False) -> logging.Logger:
+    """
+    Set up a logger for the application with file and optional console output.
+
+    Args:
+        logfile: Path to the log file
+        verbose: If True, also log to console
+
+    Returns:
+        Configured logger instance
+    """
     # Create a logger
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
@@ -306,33 +316,6 @@ class ArtifactExtractor:
         return pdf_pages
 
 
-def get_artifact_types(text: bool, tables: bool, images: bool) -> List[str]:
-    """
-    Determine which artifact types to extract based on flags.
-
-    Args:
-        text: Whether to extract text
-        tables: Whether to extract tables
-        images: Whether to extract images
-
-    Returns:
-        List of artifact types to extract
-
-    Raises:
-        ValueError: If no artifact types are specified
-    """
-    to_extract = []
-    if text:
-        to_extract.append("text")
-    if tables:
-        to_extract.append("tables")
-    if images:
-        to_extract.append("images")
-    if not to_extract:
-        raise ValueError("No artifact types specified for extraction.")
-    return to_extract
-
-
 def get_target_files(target_path: str) -> List[Path]:
     """
     Get list of files to process.
@@ -423,8 +406,10 @@ def save_results(
         logger.error(f"Failed to write output file: {e}")
 
     if save_tables_as_csv or export_excel:
-        tables = sum([x["artifacts"]["tables"] for x in data], [])
-        for tab in tables:
+        tables_charts = sum([x["artifacts"]["tables"] for x in data], []) + sum(
+            [x["artifacts"]["charts"] for x in data], []
+        )
+        for tab in tables_charts:
             # llm: convert each table to a csv string
             csv_string, filename = json_to_csv(tab)
             outfile = output_dir / f"tables_{timestamp}" / filename
@@ -456,31 +441,37 @@ def save_results(
 
 def main(
     target_path: str,
-    text: bool = True,
-    tables: bool = False,
-    images: bool = False,
+    artifacts: str,
     save_to_db: bool = False,
-    save_tables_as_csv: bool = False,
+    save_tables_as_csv: bool = True,
     export_excel: bool = False,
 ) -> None:
     """
-    Extract artifacts from PDF files and optionally save to SQL and vector databases.
+    Extract structured data from PDF documents using LLM-powered extraction.
+
+    Processes PDFs to extract text, tables, images, and charts as structured JSON.
+    Outputs are saved to timestamped files and optionally to databases.
 
     Args:
-        target_path: Path to a PDF file or directory containing PDF files
-        text: Whether to extract text
-        tables: Whether to extract tables
-        images: Whether to extract images
-        save_to_sql: Whether to save extracted artifacts to SQL database
-        save_to_vector: Whether to index extracted artifacts in vector database
-        log_file: Optional path to a log file to write logs to
+        target_path: PDF file or directory path to process
+        artifacts: Comma-separated artifact types (e.g. "text,tables,images,charts")
+        save_to_db: Save to SQL/vector databases if True
+        save_tables_as_csv: Export tables as individual CSV files if True
+        export_excel: Combine all tables into single Excel workbook if True
+
+    Output:
+        - JSON file with all extracted artifacts
+        - CSV files for each table (if save_tables_as_csv=True)
+        - Excel workbook with all tables (if export_excel=True)
+        - Database records (if save_to_db=True)
 
     Raises:
-        ValueError: If no artifact types are specified or the file type is unsupported
-        FileNotFoundError: If the target path doesn't exist
+        ValueError: Invalid artifact types or unsupported file format
+        FileNotFoundError: Target path does not exist
     """
-    # Get artifact types to extract
-    artifact_types = get_artifact_types(text, tables, images)
+    ALLOWED_ARTIFACTS = list(config["artifacts"].keys())
+    artifact_types = [x for x in artifacts if x in ALLOWED_ARTIFACTS]
+    print("Extracting artifacts: ", artifact_types, "\n")
 
     # Get files to process
     targets = get_target_files(target_path)
