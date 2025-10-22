@@ -1556,3 +1556,8 @@ RequestBuilder
 VectorIndexManager
 csvs
 programmatically
+Customizations
+VSCode
+applyTo
+mdc
+windsurfrules
