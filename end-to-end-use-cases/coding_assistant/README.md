@@ -299,7 +299,7 @@ GitHub Copilot leverages context from open files, the workspace, or specific ins
 
 #### Optimize with Custom Rules
 - Create a .github/copilot-instructions.md file in your workspace to define general coding standards and guidelines for all Copilot chat requests.
-- For file- or task-specific rules, use .instructions.md files with the applyTo frontmatter to specify file targeting.
+- For file- or task-specific rules, use .instructions.md files with the applyTo formatter to specify file targeting.
 - You can also add settings in settings.json for review, commit message generation, and pull request description instructions, either directly or by referencing instruction files
 
 For more information, refer to https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions
