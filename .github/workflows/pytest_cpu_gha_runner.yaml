@@ -64,12 +64,12 @@ jobs:
         id: pytest
         run: |
           echo "Running PyTest tests at 'GITHUB_WORKSPACE' path: ${GITHUB_WORKSPACE}"
-          cd $GITHUB_WORKSPACE && python3 -m pytest --junitxml="$GITHUB_WORKSPACE/result.xml"
+          cd $GITHUB_WORKSPACE && python3 -m pytest --junitxml="$GITHUB_WORKSPACE/pytest_result.xml"
 
       - name: Publish Test Summary
         id: test_summary
         uses: test-summary/action@v2
         with:
           paths: |
-            **/*.xml
+             **/pytest_result.xml
         if: always()
